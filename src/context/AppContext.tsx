@@ -1,13 +1,24 @@
 import { Dispatch, FC, ReactNode, createContext, useReducer } from "react";
 
 export interface State {
-  backgroundColor: string;
+  background_color: string;
+  background_container: string;
+  text_color: string;
 }
 
-export type Action = { type: "CHANGE_BACKGROUND"; payload: string };
+export type Action = {
+  type: "CHANGE_BACKGROUND";
+  payload: {
+    background_color: string;
+    background_container: string;
+    text_color: string;
+  };
+};
 
-export const initialState = {
-  backgroundColor: "",
+export const initialState: State = {
+  background_color: "",
+  background_container: "",
+  text_color: "",
 };
 
 export const reducer = (state: State = initialState, action: Action) => {
@@ -15,7 +26,9 @@ export const reducer = (state: State = initialState, action: Action) => {
     case "CHANGE_BACKGROUND": {
       return {
         ...state,
-        backgroundColor: action.payload,
+        background_color: action.payload.background_color,
+        background_container: action.payload.background_container,
+        text_color: action.payload.text_color,
       };
     }
     default: {

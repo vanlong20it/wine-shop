@@ -5,10 +5,41 @@ import Wine3 from "../assets/images/bottle-of-wine-3.png";
 import { MyContext } from "../context/AppContext";
 const Slider = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [arrSlide, setArrSlide] = useState([Wine1, Wine2, Wine3, Wine1, Wine2]);
+  const [arrSlide, setArrSlide] = useState([
+    {
+      image: Wine1,
+      background_container: "#4d4d01",
+      background_color: "#bfad41",
+      text_color: "black",
+    },
+    {
+      image: Wine2,
+      background_color: "#17641d",
+      background_container: "#234202",
+      text_color: "white",
+    },
+    {
+      image: Wine3,
+      background_color: "#8c1815",
+      background_container: "#2c0000",
+      text_color: "white",
+    },
+    {
+      image: Wine1,
+      background_container: "#4d4d01",
+      background_color: "#bfad41",
+      text_color: "black",
+    },
+    {
+      image: Wine2,
+      background_color: "#17641d",
+      background_container: "#234202",
+      text_color: "white",
+    },
+  ]);
   const [isLoad, setIsLoad] = useState(false);
   const [isAnimation, setIsAnimation] = useState(true);
-  const { dispatch } = useContext(MyContext);
+  const { state, dispatch } = useContext(MyContext);
   const [isToggle, setIsToggle] = useState(false);
 
   useLayoutEffect(() => {
@@ -19,30 +50,39 @@ const Slider = () => {
       setCurrentSlide(0);
       setIsLoad(false);
     }
+    dispatch({
+      type: "CHANGE_BACKGROUND",
+      payload: {
+        background_color: arrSlide[currentSlide].background_color,
+        background_container: arrSlide[currentSlide].background_container,
+        text_color: arrSlide[currentSlide].text_color,
+      },
+    });
   }, [currentSlide, arrSlide]);
 
-  const handleNextSlide = () => {
+  const handleNextSlide = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+
     setIsToggle((prev) => !prev);
     setIsAnimation(true);
     if (isLoad) {
       return;
     }
-    dispatch({
-      type: "CHANGE_BACKGROUND",
-      payload: isToggle ? "bg-blue-200" : "bg-pink-200",
-    });
     setIsLoad(true);
     if (currentSlide > arrSlide.length - 2) {
       setIsAnimation(false);
       setCurrentSlide(0);
-    } else
+    } else {
       setCurrentSlide((oldCurrent) => {
         return oldCurrent + 1;
       });
+    }
   };
 
   const handleTransitionEnd = (e: any) => {
     setIsLoad(false);
+
     if (currentSlide >= arrSlide.length - 2) {
       setIsAnimation(false);
       setCurrentSlide(0);
@@ -56,8 +96,12 @@ const Slider = () => {
           <div className="col-span-3 border-r border-solid border-black relative">
             <button
               type="button"
-              onClick={handleNextSlide}
-              className={`absolute top-[20%] right-0 translate-x-1/2 bg-pink-100 z-10 flex items-center justify-center w-20 h-20 hover:bg-black hover:text-white transition-all hover:border-black duration-500 rounded-full border-black border-solid border`}
+              onClick={(e) => handleNextSlide(e)}
+              className={`absolute top-[20%] right-0 translate-x-1/2 z-10 flex items-center justify-center w-20 h-20 transition-all duration-500 rounded-full border-black border-solid border`}
+              style={{
+                backgroundColor: state.background_color,
+                color: state.text_color,
+              }}
             >
               Next
             </button>
@@ -66,7 +110,7 @@ const Slider = () => {
       </div>
       <div
         className={`flex flex-nowrap h-full${
-          isAnimation ? " transition-all duration-1000 ease-in-out" : ""
+          isAnimation ? " transition-transform duration-1000 ease-in-out" : ""
         }`}
         style={{ transform: `translateX(-${currentSlide * 60}%)` }}
         onTransitionEnd={handleTransitionEnd}
@@ -76,15 +120,15 @@ const Slider = () => {
             <div key={index} className="min-w-[60%] grid grid-rows-4">
               <div className="py-5 px-5 row-span-4">
                 <img
-                  src={item}
+                  src={item.image}
                   alt=""
                   className="max-w-full w-full h-[500px] object-contain drop-shadow-md shadow-black"
                 />
               </div>
               <div className="px-5 py-10 row-span-1">
                 <h1>Wine relax: red semi-sweet</h1>
-                <hr className="border-t border-gray-500 border-solid my-2" />
-                <div className="flex justify-between items-center">
+                <hr className="border-t border-black border-solid my-2" />
+                <div className="flex justify-between">
                   <p>$ 123</p>
                   <button type="button">
                     <svg

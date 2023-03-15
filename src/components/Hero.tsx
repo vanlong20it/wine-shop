@@ -39,7 +39,7 @@ const Hero = () => {
               magni rerum porro!
             </p>
           </div>
-          <div className="col-span-2 flex items-center justify-center">
+          <div className="col-span-2 flex items-center justify-center text-inherit">
             <button
               type="button"
               className="aspect-square rounded-full p-3 border border-solid border-black -rotate-12"
